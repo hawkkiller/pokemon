@@ -1,8 +1,11 @@
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizzle_starter/src/core/utils/logger.dart';
 import 'package:sizzle_starter/src/feature/app/logic/tracking_manager.dart';
 import 'package:sizzle_starter/src/feature/initialization/model/dependencies.dart';
 import 'package:sizzle_starter/src/feature/initialization/model/environment_store.dart';
+import 'package:sizzle_starter/src/feature/pokemons/data/pokemons_network_provider.dart';
+import 'package:sizzle_starter/src/feature/pokemons/data/pokemons_repository.dart';
 import 'package:sizzle_starter/src/feature/settings/bloc/settings_bloc.dart';
 import 'package:sizzle_starter/src/feature/settings/data/locale_datasource.dart';
 import 'package:sizzle_starter/src/feature/settings/data/locale_repository.dart';
@@ -31,10 +34,25 @@ final class InitializationProcessor {
 
     final settingsBloc = await _initSettingsBloc(sharedPreferences);
 
+    final httpClient = http.Client();
+    final pokemonsRepository = _initPokemonsRepository(httpClient);
+
     return Dependencies(
       sharedPreferences: sharedPreferences,
       settingsBloc: settingsBloc,
+      pokemonsRepository: pokemonsRepository,
     );
+  }
+
+  PokemonsRepository _initPokemonsRepository(http.Client client) {
+    final pokemonsRepository = PokemonsRepositoryImpl(
+      dataProvider: PokemonsNetworkProvider(
+        baseUrl: _environmentStore.baseUrl,
+        client: client,
+      ),
+    );
+
+    return pokemonsRepository;
   }
 
   Future<SettingsBloc> _initSettingsBloc(SharedPreferences prefs) async {

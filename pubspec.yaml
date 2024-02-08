@@ -23,6 +23,9 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
+  # Navigation
+  go_router: ^13.1.0
+
   # Stream
   stream_transform: ^2.1.0
 
@@ -67,7 +70,7 @@ dev_dependencies:
   # Codegen
   freezed: ^2.4.5
   json_serializable: ^6.7.1
-  drift_dev: ^2.13.1
+  go_router_builder: ^2.4.1
   build_runner: ^2.4.6
 
 flutter:
